@@ -17,8 +17,10 @@ package com.handmark.pulltorefresh.library;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
@@ -62,7 +64,48 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 		return Orientation.VERTICAL;
 	}
 
-	@Override
+    public void setHeaderTextColor(ColorStateList color) {
+        if(getHeaderLayout() != null) {
+            getHeaderLayout().setTextColor(color);
+        }
+        if(mHeaderLoadingView != null) {
+            mHeaderLoadingView.setTextColor(color);
+        }
+    }
+
+    public void setHeaderBackground(Drawable drawable) {
+        if(drawable != null) {
+            if(getHeaderLayout() != null) {
+                getHeaderLayout().setHeaderBackground(drawable);
+            }
+            if(mHeaderLoadingView != null) {
+                mHeaderLoadingView.setHeaderBackground(drawable);
+            }
+        }
+    }
+
+    public void setHeaderProgress(Drawable progressDrawable, Drawable background) {
+        if(getHeaderLayout() != null) {
+            getHeaderLayout().setHeaderProgress(progressDrawable, background);
+        }
+        if(mHeaderLoadingView != null) {
+            mHeaderLoadingView.setHeaderProgress(progressDrawable, background);
+        }
+    }
+
+    public void setHeaderLoading(Drawable drawable) {
+        if(drawable != null) {
+            if(getHeaderLayout() != null) {
+                getHeaderLayout().setLoadingDrawable(drawable);
+            }
+            if(mHeaderLoadingView != null) {
+                mHeaderLoadingView.setLoadingDrawable(drawable);
+            }
+        }
+    }
+
+
+    @Override
 	protected void onRefreshing(final boolean doScroll) {
 		/**
 		 * If we're not showing the Refreshing view, or the list is empty, the

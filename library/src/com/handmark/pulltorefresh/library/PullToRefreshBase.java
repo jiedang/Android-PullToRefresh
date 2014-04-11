@@ -16,11 +16,13 @@
 package com.handmark.pulltorefresh.library;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -34,11 +36,7 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.handmark.pulltorefresh.library.internal.FlipLoadingLayout;
-import com.handmark.pulltorefresh.library.internal.LoadingLayout;
-import com.handmark.pulltorefresh.library.internal.RotateLoadingLayout;
-import com.handmark.pulltorefresh.library.internal.Utils;
-import com.handmark.pulltorefresh.library.internal.ViewCompat;
+import com.handmark.pulltorefresh.library.internal.*;
 
 public abstract class PullToRefreshBase<T extends View> extends LinearLayout implements IPullToRefresh<T> {
 
@@ -52,7 +50,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
 	static final String LOG_TAG = "PullToRefresh";
 
-	static final float FRICTION = 2.0f;
+	static final float FRICTION = 4.0f;
 
 	public static final int SMOOTH_SCROLL_DURATION_MS = 200;
 	public static final int SMOOTH_SCROLL_LONG_DURATION_MS = 325;
@@ -301,9 +299,14 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
 	@Override
 	public final void onRefreshComplete() {
-		if (isRefreshing()) {
-			setState(State.RESET);
-		}
+        if (isRefreshing()) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setState(State.RESET);
+                }
+            }, 500);
+        }
 	}
 
 	@Override
@@ -584,8 +587,9 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 	}
 
 	protected LoadingLayout createLoadingLayout(Context context, Mode mode, TypedArray attrs) {
-		LoadingLayout layout = mLoadingAnimationStyle.createLoadingLayout(context, mode,
-				getPullToRefreshScrollDirection(), attrs);
+//		LoadingLayout layout = mLoadingAnimationStyle.createLoadingLayout(context, mode,
+//				getPullToRefreshScrollDirection(), attrs);
+        LoadingLayout layout = new ClipLoadingLayout(context, mode, getPullToRefreshScrollDirection(), attrs);
 		layout.setVisibility(View.INVISIBLE);
 		return layout;
 	}
@@ -866,13 +870,28 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 		});
 	}
 
+    private void measureView(View child) {
+        ViewGroup.LayoutParams p = child.getLayoutParams();
+        if (p == null) {
+            p = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+
+        int childWidthSpec = ViewGroup.getChildMeasureSpec(0, 0, p.width);
+        int lpHeight = p.height;
+        int childHeightSpec;
+        if (lpHeight > 0) {
+            childHeightSpec = MeasureSpec.makeMeasureSpec(lpHeight, MeasureSpec.EXACTLY);
+        } else {
+            childHeightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        }
+        child.measure(childWidthSpec, childHeightSpec);
+    }
+
 	/**
 	 * Re-measure the Loading Views height, and adjust internal padding as
 	 * necessary
 	 */
 	protected final void refreshLoadingViewsSize() {
-		final int maximumPullScroll = (int) (getMaximumPullScroll() * 1.2f);
-
 		int pLeft = getPaddingLeft();
 		int pTop = getPaddingTop();
 		int pRight = getPaddingRight();
@@ -881,15 +900,15 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 		switch (getPullToRefreshScrollDirection()) {
 			case HORIZONTAL:
 				if (mMode.showHeaderLoadingLayout()) {
-					mHeaderLayout.setWidth(maximumPullScroll);
-					pLeft = -maximumPullScroll;
+                    measureView(mHeaderLayout);
+					pLeft = -mHeaderLayout.getMeasuredWidth();
 				} else {
 					pLeft = 0;
 				}
 
 				if (mMode.showFooterLoadingLayout()) {
-					mFooterLayout.setWidth(maximumPullScroll);
-					pRight = -maximumPullScroll;
+                    measureView(mFooterLayout);
+					pRight = -mFooterLayout.getMeasuredWidth();
 				} else {
 					pRight = 0;
 				}
@@ -897,15 +916,15 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
 			case VERTICAL:
 				if (mMode.showHeaderLoadingLayout()) {
-					mHeaderLayout.setHeight(maximumPullScroll);
-					pTop = -maximumPullScroll;
+                    measureView(mHeaderLayout);
+					pTop = -mHeaderLayout.getMeasuredHeight();
 				} else {
 					pTop = 0;
 				}
 
 				if (mMode.showFooterLoadingLayout()) {
-					mFooterLayout.setHeight(maximumPullScroll);
-					pBottom = -maximumPullScroll;
+                    measureView(mFooterLayout);
+					pBottom = -mFooterLayout.getMeasuredHeight();
 				} else {
 					pBottom = 0;
 				}
@@ -984,6 +1003,18 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 				break;
 		}
 	}
+
+    public void setHeaderTextColor(ColorStateList color) {
+        if(mHeaderLayout != null) {
+            mHeaderLayout.setTextColor(color);
+        }
+    }
+
+    public void setHeaderBackground(Drawable drawable) {
+        if(mHeaderLayout != null && drawable != null) {
+            mHeaderLayout.setHeaderBackground(drawable);
+        }
+    }
 
 	/**
 	 * Smooth Scroll to position using the default duration of

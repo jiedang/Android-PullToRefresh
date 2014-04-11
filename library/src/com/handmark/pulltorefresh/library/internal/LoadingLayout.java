@@ -30,10 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.handmark.pulltorefresh.library.ILoadingLayout;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
@@ -47,7 +44,7 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 
 	static final Interpolator ANIMATION_INTERPOLATOR = new LinearInterpolator();
 
-	private FrameLayout mInnerLayout;
+	private RelativeLayout mInnerLayout;
 
 	protected final ImageView mHeaderImage;
 	protected final ProgressBar mHeaderProgress;
@@ -79,7 +76,7 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 				break;
 		}
 
-		mInnerLayout = (FrameLayout) findViewById(R.id.fl_inner);
+		mInnerLayout = (RelativeLayout) findViewById(R.id.fl_inner);
 		mHeaderText = (TextView) mInnerLayout.findViewById(R.id.pull_to_refresh_text);
 		mHeaderProgress = (ProgressBar) mInnerLayout.findViewById(R.id.pull_to_refresh_progress);
 		mSubHeaderText = (TextView) mInnerLayout.findViewById(R.id.pull_to_refresh_sub_text);
@@ -102,9 +99,9 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 				lp.gravity = scrollDirection == Orientation.VERTICAL ? Gravity.BOTTOM : Gravity.RIGHT;
 
 				// Load in labels
-				mPullLabel = context.getString(R.string.pull_to_refresh_pull_label);
-				mRefreshingLabel = context.getString(R.string.pull_to_refresh_refreshing_label);
-				mReleaseLabel = context.getString(R.string.pull_to_refresh_release_label);
+                mPullLabel = "下拉刷新...";
+                mRefreshingLabel = "正在加载...";
+                mReleaseLabel = "松手刷新...";
 				break;
 		}
 
@@ -294,6 +291,15 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 		onLoadingDrawableSet(imageDrawable);
 	}
 
+    public void setHeaderProgress(Drawable progressDrawable, Drawable background) {
+        if(progressDrawable != null) {
+            mHeaderProgress.setProgressDrawable(progressDrawable);
+        }
+        if(background != null) {
+            ViewCompat.setBackground(mHeaderProgress, background);
+        }
+    }
+
 	public void setPullLabel(CharSequence pullLabel) {
 		mPullLabel = pullLabel;
 	}
@@ -381,13 +387,19 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 		}
 	}
 
-	private void setTextColor(ColorStateList color) {
-		if (null != mHeaderText) {
-			mHeaderText.setTextColor(color);
-		}
-		if (null != mSubHeaderText) {
-			mSubHeaderText.setTextColor(color);
-		}
-	}
+    public void setTextColor(ColorStateList color) {
+        if (null != mHeaderText) {
+            mHeaderText.setTextColor(color);
+        }
+        if (null != mSubHeaderText) {
+            mSubHeaderText.setTextColor(color);
+        }
+    }
+
+    public void setHeaderBackground(Drawable background) {
+        if (null != background) {
+            ViewCompat.setBackground(this, background);
+        }
+    }
 
 }
