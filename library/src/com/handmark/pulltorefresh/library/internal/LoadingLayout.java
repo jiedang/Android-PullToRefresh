@@ -44,12 +44,12 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 
 	static final Interpolator ANIMATION_INTERPOLATOR = new LinearInterpolator();
 
-	private RelativeLayout mInnerLayout;
+	protected RelativeLayout mInnerLayout;
 
 	protected final ImageView mHeaderImage;
 	protected final ProgressBar mHeaderProgress;
 
-	private boolean mUseIntrinsicAnimation;
+    protected boolean mUseIntrinsicAnimation;
 
 	private final TextView mHeaderText;
 	private final TextView mSubHeaderText;

@@ -589,7 +589,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 	protected LoadingLayout createLoadingLayout(Context context, Mode mode, TypedArray attrs) {
 //		LoadingLayout layout = mLoadingAnimationStyle.createLoadingLayout(context, mode,
 //				getPullToRefreshScrollDirection(), attrs);
-        LoadingLayout layout = new ClipLoadingLayout(context, mode, getPullToRefreshScrollDirection(), attrs);
+        LoadingLayout layout = new NewYearLoadingLayout(context, mode, getPullToRefreshScrollDirection(), attrs);
 		layout.setVisibility(View.INVISIBLE);
 		return layout;
 	}
