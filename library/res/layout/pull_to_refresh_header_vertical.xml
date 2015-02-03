@@ -1,78 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fl_inner"
+    android:layout_width="fill_parent"
+    android:layout_height="75dp">
+    <LinearLayout
+        android:id="@+id/ll_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/pull_to_refresh_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearance" />
+
+        <TextView
+            android:id="@+id/pull_to_refresh_sub_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:visibility="gone" />
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/new_year_bag_bg"
+        android:layout_width="75dp"
+        android:layout_height="37dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/new_year_bag_bg" />
+
+    <ImageView
+        android:id="@+id/pull_to_refresh_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/new_year_cat_1"
+        android:layout_centerHorizontal="true" />
+
+    <View
+        android:id="@+id/new_year_bag_front"
+        android:layout_width="75dp"
+        android:layout_height="24dp"
+        android:layout_alignBottom="@+id/new_year_bag_bg"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/new_year_bag_front" />
+
 
     <RelativeLayout
-        android:id="@+id/fl_inner"
-        android:layout_width="fill_parent"
-        android:background="#bb3838"
-        android:layout_height="60dp">
-        <View
-            android:layout_width="match_parent"
-            android:background="@drawable/new_year_bg_decoration"
-            android:layout_height="60dp"/>
-        <LinearLayout
-            android:id="@+id/ll_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:visibility="gone">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/pull_to_refresh_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearance" />
-
-            <TextView
-                android:id="@+id/pull_to_refresh_sub_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:visibility="gone" />
-        </LinearLayout>
-
-
-        <View
-            android:id="@+id/new_year_bag_bg"
-            android:layout_width="133dp"
-            android:layout_height="27dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/new_year_bag_bg" />
-        <ImageView
-            android:id="@+id/pull_to_refresh_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/new_year_bag_bg"
-            android:layout_centerHorizontal="true" />
-        <View
-            android:id="@+id/new_year_bag_front"
-            android:layout_width="133dp"
-            android:layout_height="27dp"
-            android:layout_alignBottom="@+id/new_year_bag_bg"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/new_year_bag_front" />
-
-
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
-
-            <ProgressBar
-                android:id="@+id/pull_to_refresh_progress"
-                style="@style/PullProgressStyle"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                android:visibility="gone" />
-        </RelativeLayout>
+        <ProgressBar
+            android:id="@+id/pull_to_refresh_progress"
+            style="@style/PullProgressStyle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="gone" />
     </RelativeLayout>
-
-</merge>
+</RelativeLayout>

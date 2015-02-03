@@ -6,10 +6,15 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.R;
+import com.nineoldandroids.animation.FloatEvaluator;
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.animation.TypeEvaluator;
+import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
 /**
@@ -19,13 +24,32 @@ public class NewYearLoadingLayout extends LoadingLayout{
     private int frontViewHeiht = 0;
     private int defaultHeiht = 0;
     private int mHeaderImageHeight = 0;
-    private int moveMaxDistance = 0;
     private View frontView;
+    private float moveDistance = 0;
+    private ValueAnimator valueAnimator;
     public NewYearLoadingLayout(Context context, PullToRefreshBase.Mode mode, PullToRefreshBase.Orientation scrollDirection, TypedArray attrs) {
         super(context, mode, scrollDirection, attrs);
         frontView = findViewById(R.id.new_year_bag_front);
-        mUseIntrinsicAnimation = false;
-        moveMaxDistance =  (int) (88 * context.getResources().getDisplayMetrics().density);
+
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                if(frontViewHeiht == 0){
+                    frontViewHeiht =  frontView.getHeight();
+                }
+                if(defaultHeiht == 0){
+                    defaultHeiht = getHeight();
+                }
+                if(mHeaderImageHeight == 0){
+                    mHeaderImageHeight = mHeaderImage.getHeight();
+                }
+                ViewHelper.setTranslationY(mHeaderImage, mHeaderImageHeight/4*3);
+            }
+        });
+
+
+
     }
 
     @Override
@@ -38,24 +62,24 @@ public class NewYearLoadingLayout extends LoadingLayout{
 
     }
 
+
     @Override
     protected void onPullImpl(float scaleOfLayout) {
-        if(frontViewHeiht == 0){
-            frontViewHeiht =  frontView.getHeight();
+        if(scaleOfLayout > 1){
+            setHeight((int)(scaleOfLayout * defaultHeiht));
+            moveDistance = (scaleOfLayout - 1) * defaultHeiht;
         }
-        if(defaultHeiht == 0){
-            defaultHeiht = getHeight();
-        }
-        if(mHeaderImageHeight == 0){
-            mHeaderImageHeight = mHeaderImage.getHeight();
-        }
-        boolean isOut = - ViewHelper.getTranslationY(mHeaderImage)  > moveMaxDistance ;
 
-        if( !isOut && scaleOfLayout * defaultHeiht > frontViewHeiht){
-            float distance = scaleOfLayout * defaultHeiht - frontViewHeiht;
-            ViewHelper.setTranslationY(mHeaderImage,- distance);
-
+        if(scaleOfLayout > 0.75f){
+            if(valueAnimator == null){
+                valueAnimator =  ValueAnimator.ofFloat(mHeaderImageHeight/4*3,mHeaderImageHeight/5).setDuration(250);
+                valueAnimator.start();
+            }else{
+                float currentValue = (Float)valueAnimator.getAnimatedValue();
+                ViewHelper.setTranslationY(mHeaderImage, currentValue);
+            }
         }
+
     }
 
     @Override
@@ -64,6 +88,7 @@ public class NewYearLoadingLayout extends LoadingLayout{
 
     @Override
     protected void refreshingImpl() {
+        ViewHelper.setTranslationY(newYearbg, moveDistance);
         ((AnimationDrawable) mHeaderImage.getDrawable()).start();
     }
 
@@ -74,6 +99,13 @@ public class NewYearLoadingLayout extends LoadingLayout{
     @Override
     protected void resetImpl() {
         ((AnimationDrawable) mHeaderImage.getDrawable()).stop();
-        ViewHelper.setTranslationY(mHeaderImage,0);
+        if(mHeaderImageHeight > 0){
+            ViewHelper.setTranslationY(mHeaderImage, mHeaderImageHeight/4*3);
+        }
+        ViewHelper.setTranslationY(newYearbg,0);
+        if(moveDistance > 0){
+            setHeight(defaultHeiht);
+        }
+        valueAnimator = null;
     }
 }
