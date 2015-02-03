@@ -23,7 +23,7 @@ import com.nineoldandroids.view.ViewHelper;
 public class NewYearLoadingLayout extends LoadingLayout{
     private int frontViewHeiht = 0;
     private int defaultHeiht = 0;
-    private int mHeaderImageHeight = 0;
+    private static int mHeaderImageHeight = 0;
     private View frontView;
     private float moveDistance = 0;
     private ValueAnimator valueAnimator;
@@ -41,10 +41,17 @@ public class NewYearLoadingLayout extends LoadingLayout{
                 if(defaultHeiht == 0){
                     defaultHeiht = getHeight();
                 }
-                if(mHeaderImageHeight == 0){
+                //因为LIST VIEW 滚动和刷新停留采用两个不同的VIEW 只有滚动的提前添加到了界面 停留采用LIST HEAD VIEW 添加  所以导致在停留VIEW 获取不到高度
+                // 1 保存高度
+                // 2 在获取高度失败后  直接设置记录值的位置
+                if(mHeaderImageHeight == 0 && mHeaderImage.getHeight() != 0){
                     mHeaderImageHeight = mHeaderImage.getHeight();
                 }
-                ViewHelper.setTranslationY(mHeaderImage, mHeaderImageHeight/4*3);
+                if(mHeaderImage.getHeight() != 0){
+                    ViewHelper.setTranslationY(mHeaderImage, mHeaderImageHeight/4*3);
+                }else{
+                    ViewHelper.setTranslationY(mHeaderImage, mHeaderImageHeight/5);
+                }
             }
         });
 
@@ -70,13 +77,15 @@ public class NewYearLoadingLayout extends LoadingLayout{
             moveDistance = (scaleOfLayout - 1) * defaultHeiht;
         }
 
-        if(scaleOfLayout > 0.75f){
+        if(scaleOfLayout > 0.8f){
             if(valueAnimator == null){
                 valueAnimator =  ValueAnimator.ofFloat(mHeaderImageHeight/4*3,mHeaderImageHeight/5).setDuration(250);
                 valueAnimator.start();
             }else{
                 float currentValue = (Float)valueAnimator.getAnimatedValue();
-                ViewHelper.setTranslationY(mHeaderImage, currentValue);
+                if(ViewHelper.getTranslationY(mHeaderImage) != currentValue){
+                    ViewHelper.setTranslationY(mHeaderImage, currentValue);
+                }
             }
         }
 
