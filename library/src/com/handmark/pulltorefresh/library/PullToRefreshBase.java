@@ -587,10 +587,19 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 	}
 
 	protected LoadingLayout createLoadingLayout(Context context, Mode mode, TypedArray attrs) {
-//		LoadingLayout layout = mLoadingAnimationStyle.createLoadingLayout(context, mode,
-//				getPullToRefreshScrollDirection(), attrs);
-        LoadingLayout layout = new NewYearLoadingLayout(context, mode, getPullToRefreshScrollDirection(), attrs);
-		layout.setVisibility(View.INVISIBLE);
+		LoadingLayout layout = null;
+        //只修改竖向的下拉刷新
+        switch (getPullToRefreshScrollDirection()) {
+            case HORIZONTAL:
+                layout = mLoadingAnimationStyle.createLoadingLayout(context, mode,
+                        getPullToRefreshScrollDirection(), attrs);
+                break;
+            case VERTICAL:
+            default:
+                layout = new NewYearLoadingLayout(context, mode, getPullToRefreshScrollDirection(), attrs);
+                layout.setVisibility(View.INVISIBLE);
+                break;
+        }
 		return layout;
 	}
 
