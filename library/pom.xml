@@ -16,25 +16,45 @@
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.nineoldandroids</groupId>
             <artifactId>library</artifactId>
             <version>2.4.0</version>
-
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
     <build>
+        <sourceDirectory>src</sourceDirectory>
         <plugins>
             <plugin>
-                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                <groupId>com.jayway.maven.plugins.android.generation2
+                </groupId>
                 <artifactId>android-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>3.8.2</version>
+                <configuration>
+                    <sdk>
+                        <platform>17</platform>
+                    </sdk>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-eclipse-plugin</artifactId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
