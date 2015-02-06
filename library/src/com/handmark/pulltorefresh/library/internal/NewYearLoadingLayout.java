@@ -84,13 +84,14 @@ public class NewYearLoadingLayout extends LoadingLayout{
         }
 
     }
-
     @Override
     protected void pullToRefreshImpl() {
+        setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void refreshingImpl() {
+        android.util.Log.d("AA","refreshingImpl");
         ((AnimationDrawable) mHeaderImage.getDrawable()).start();
     }
 
@@ -100,6 +101,8 @@ public class NewYearLoadingLayout extends LoadingLayout{
 
     @Override
     protected void resetImpl() {
+        setVisibility(View.INVISIBLE);
+        android.util.Log.d("AA","resetImpl");
         ((AnimationDrawable) mHeaderImage.getDrawable()).stop();
         if(mHeaderImageHeight > 0){
             ViewHelper.setTranslationY(mHeaderImage, mHeaderImageHeight/4*3);
