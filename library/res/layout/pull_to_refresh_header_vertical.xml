@@ -3,6 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fl_inner"
     android:layout_width="fill_parent"
+    android:background="@drawable/new_year_bg_decoration"
     android:layout_height="75dp">
     <LinearLayout
         android:id="@+id/ll_layout"

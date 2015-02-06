@@ -61,17 +61,8 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 	private CharSequence mPullLabel;
 	private CharSequence mRefreshingLabel;
 	private CharSequence mReleaseLabel;
-    protected  View newYearbg;
 	public LoadingLayout(Context context, final Mode mode, final Orientation scrollDirection, TypedArray attrs) {
 		super(context);
-        if(this instanceof NewYearLoadingLayout){
-            setBackgroundColor(Color.parseColor("#bb3838"));
-             newYearbg = new View(context);
-            newYearbg.setBackgroundResource(R.drawable.new_year_bg_decoration);
-            newYearbg.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,200));
-            addView(newYearbg);
-        }
-
 		mMode = mode;
 		mScrollDirection = scrollDirection;
 

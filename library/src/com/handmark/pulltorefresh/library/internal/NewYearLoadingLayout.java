@@ -25,7 +25,6 @@ public class NewYearLoadingLayout extends LoadingLayout{
     private int defaultHeiht = 0;
     private static int mHeaderImageHeight = 0;
     private View frontView;
-    private float moveDistance = 0;
     private ValueAnimator valueAnimator;
     public NewYearLoadingLayout(Context context, PullToRefreshBase.Mode mode, PullToRefreshBase.Orientation scrollDirection, TypedArray attrs) {
         super(context, mode, scrollDirection, attrs);
@@ -72,11 +71,6 @@ public class NewYearLoadingLayout extends LoadingLayout{
 
     @Override
     protected void onPullImpl(float scaleOfLayout) {
-        if(scaleOfLayout > 1){
-            setHeight((int)(scaleOfLayout * defaultHeiht));
-            moveDistance = (scaleOfLayout - 1) * defaultHeiht;
-        }
-
         if(scaleOfLayout > 0.8f){
             if(valueAnimator == null){
                 valueAnimator =  ValueAnimator.ofFloat(mHeaderImageHeight/4*3,mHeaderImageHeight/5).setDuration(250);
@@ -97,7 +91,6 @@ public class NewYearLoadingLayout extends LoadingLayout{
 
     @Override
     protected void refreshingImpl() {
-        ViewHelper.setTranslationY(newYearbg, moveDistance);
         ((AnimationDrawable) mHeaderImage.getDrawable()).start();
     }
 
@@ -110,10 +103,6 @@ public class NewYearLoadingLayout extends LoadingLayout{
         ((AnimationDrawable) mHeaderImage.getDrawable()).stop();
         if(mHeaderImageHeight > 0){
             ViewHelper.setTranslationY(mHeaderImage, mHeaderImageHeight/4*3);
-        }
-        ViewHelper.setTranslationY(newYearbg,0);
-        if(moveDistance > 0){
-            setHeight(defaultHeiht);
         }
         valueAnimator = null;
     }
