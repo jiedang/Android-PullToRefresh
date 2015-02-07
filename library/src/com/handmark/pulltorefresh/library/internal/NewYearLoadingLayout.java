@@ -71,7 +71,7 @@ public class NewYearLoadingLayout extends LoadingLayout{
 
     @Override
     protected void onPullImpl(float scaleOfLayout) {
-        if(scaleOfLayout > 0.8f){
+        if(scaleOfLayout > 0.9f){
             if(valueAnimator == null){
                 valueAnimator =  ValueAnimator.ofFloat(mHeaderImageHeight/4*3,mHeaderImageHeight/5).setDuration(250);
                 valueAnimator.start();
@@ -96,6 +96,7 @@ public class NewYearLoadingLayout extends LoadingLayout{
 
     @Override
     protected void releaseToRefreshImpl() {
+        ((AnimationDrawable) mHeaderImage.getDrawable()).start();
     }
 
     @Override
