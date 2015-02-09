@@ -4,7 +4,9 @@
 
     <groupId>com.github.chrisbanes.pulltorefresh</groupId>
     <artifactId>library</artifactId>
-    <packaging>apklib</packaging>
+    <version>2.1.8_maoyan</version>
+    <!-- 在跑SAMPLE时候 改为 apklib-->
+    <packaging>aar</packaging>
     <name>Android-PullToRefresh Library</name>
 
     <parent>
