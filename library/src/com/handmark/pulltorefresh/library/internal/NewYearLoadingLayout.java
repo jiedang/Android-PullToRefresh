@@ -2,19 +2,13 @@ package com.handmark.pulltorefresh.library.internal;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.R;
-import com.nineoldandroids.animation.FloatEvaluator;
-import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.animation.TypeEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
@@ -24,12 +18,14 @@ import com.nineoldandroids.view.ViewHelper;
 public class NewYearLoadingLayout extends LoadingLayout {
     private int mHeaderImageHeight = 0;
     private ValueAnimator valueAnimator;
-
+    private boolean hasShowAnimator = false;
+    private float startY,endY;
     public NewYearLoadingLayout(Context context, PullToRefreshBase.Mode mode, PullToRefreshBase.Orientation scrollDirection, TypedArray attrs) {
         super(context, mode, scrollDirection, attrs);
         mHeaderImageHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75, context.getResources().getDisplayMetrics());
-        ViewHelper.setTranslationY(mHeaderImage, mHeaderImageHeight / 3 * 2);
-
+        startY =  mHeaderImageHeight / 3 * 2;
+        endY =  mHeaderImageHeight /6;
+        ViewHelper.setTranslationY(mHeaderImage, startY);
     }
 
     @Override
@@ -47,8 +43,9 @@ public class NewYearLoadingLayout extends LoadingLayout {
     protected void onPullImpl(float scaleOfLayout) {
         if (scaleOfLayout > 0.9f) {
             if (valueAnimator == null) {
-                valueAnimator = ValueAnimator.ofFloat(mHeaderImageHeight / 4 * 3, mHeaderImageHeight / 5).setDuration(250);
+                valueAnimator = ValueAnimator.ofFloat(startY, endY).setDuration(250);
                 valueAnimator.start();
+                showNewYearAnimator();
             } else {
                 float currentValue = (Float) valueAnimator.getAnimatedValue();
                 if (ViewHelper.getTranslationY(mHeaderImage) != currentValue) {
@@ -61,31 +58,35 @@ public class NewYearLoadingLayout extends LoadingLayout {
 
     @Override
     protected void pullToRefreshImpl() {
-        setVisibility(View.VISIBLE);
+
     }
 
     @Override
     protected void refreshingImpl() {
+        ViewHelper.setTranslationY(mHeaderImage, endY);
         showNewYearAnimator();
     }
 
     @Override
     protected void releaseToRefreshImpl() {
-        showNewYearAnimator();
+
     }
 
     private void showNewYearAnimator() {
-        ViewHelper.setTranslationY(mHeaderImage, mHeaderImageHeight / 5);
         ((AnimationDrawable) mHeaderImage.getDrawable()).start();
+        hasShowAnimator = true;
     }
 
     @Override
     protected void resetImpl() {
-        setVisibility(View.INVISIBLE);
-        ((AnimationDrawable) mHeaderImage.getDrawable()).stop();
-        if (mHeaderImageHeight > 0) {
-            ViewHelper.setTranslationY(mHeaderImage, mHeaderImageHeight / 3 * 2);
+        //已经显示过动画的 在移除前 设置为不显示 防止界面出现闪烁
+        if(hasShowAnimator){
+            hasShowAnimator = false;
+            setVisibility(View.INVISIBLE);
         }
+
+        ((AnimationDrawable) mHeaderImage.getDrawable()).stop();
+        ViewHelper.setTranslationY(mHeaderImage, startY);
         valueAnimator = null;
     }
 }
